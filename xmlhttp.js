@@ -10,9 +10,9 @@
 
 'use strict';
 
-function xBuffer(settings) {
+function XMLH(settings) {
     // Initiate required settings
-    this.xBuffer = new XMLHttpRequest();
+    this.XMLH = new XMLHttpRequest();
     this.method = settings.method;
     this.link = settings.api;
     this.contentFormat = settings.contentFormat;
@@ -24,7 +24,7 @@ function xBuffer(settings) {
     this.sendRequest();
 }
 
-xBuffer.prototype.createBase = function() {
+XMLH.prototype.createBase = function() {
 
     var base = '';
 
@@ -45,7 +45,7 @@ xBuffer.prototype.createBase = function() {
 }
 
 // Prepare params as JSON if POST request or string as GET request
-xBuffer.prototype.prepareRequest = function() {
+XMLH.prototype.prepareRequest = function() {
     
     var params = '';
 
@@ -90,8 +90,8 @@ xBuffer.prototype.prepareRequest = function() {
     //console.log(this.params);
 }
 
-xBuffer.prototype.getResponse = function() {
-    var request = this.xBuffer;
+XMLH.prototype.getResponse = function() {
+    var request = this.XMLH;
     
     request.onreadystatechange = function() {
         if(request.readyState === XMLHttpRequest.DONE && request.status === 200) {
@@ -100,7 +100,7 @@ xBuffer.prototype.getResponse = function() {
     }
 }
 
-xBuffer.prototype.sendRequest = function() {
+XMLH.prototype.sendRequest = function() {
 
     var paramsBase = this.createBase();
     var paramsData = this.prepareRequest();
@@ -108,23 +108,23 @@ xBuffer.prototype.sendRequest = function() {
     switch (this.method) {
         case 'GET':
             
-            this.xBuffer.open(this.method, this.link + paramsBase + paramsData, true);
-            this.xBuffer.send();
+            this.XMLH.open(this.method, this.link + paramsBase + paramsData, true);
+            this.XMLH.send();
 
             break;
         case 'POST':
             
-            this.xBuffer.open(this.method, this.link + paramsBase, true);
-            this.xBuffer.setRequestHeader('Content-Type', this.contentFormat);
-            this.xBuffer.send(paramsData);
+            this.XMLH.open(this.method, this.link + paramsBase, true);
+            this.XMLH.setRequestHeader('Content-Type', this.contentFormat);
+            this.XMLH.send(paramsData);
             break;
         default:
             // Use GET method
-            this.xBuffer.open(this.method, this.link + paramsBase + paramsData, true);
-            this.xBuffer.send();
+            this.XMLH.open(this.method, this.link + paramsBase + paramsData, true);
+            this.XMLH.send();
 
             break;
     }
 }
 
-export default xBuffer;
+export default XMLH;
