@@ -90,12 +90,20 @@ XMLH.prototype.prepareRequest = function() {
     //console.log(this.params);
 }
 
-XMLH.prototype.getResponse = function() {
+XMLH.prototype.getResponse = function(callback) {
     var request = this.XMLH;
     
     request.onreadystatechange = function() {
-        if(request.readyState === XMLHttpRequest.DONE && request.status === 200) {
-            console.log(request.responseText);
+        if(request.readyState === XMLHttpRequest.DONE) {
+
+            if(request.status === 200) {
+                callback(request.responseText);
+                return;
+            } else {
+                callback({"success": false, "message":"Error!"});
+                return;
+            }
+            
         }
     }
 }
