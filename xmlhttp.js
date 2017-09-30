@@ -20,8 +20,24 @@ function XMLH(settings) {
     this.params = settings.params;
     this.send = settings.params.send;
     
+    this.errorConnection = false;
+
     // Fire request
     this.sendRequest();
+}
+
+XMLH.prototype.connectionError = function(error) {
+    if(error) {
+        this.errorConnection = true;
+        this.connectionEstaplished(false);
+    }
+}
+
+XMLH.prototype.connectionEstaplished = function(onload) {
+    if(onload) {
+        this.errorConnection = false;
+        this.connectionError(false);
+    }
 }
 
 XMLH.prototype.createBase = function() {
@@ -91,16 +107,19 @@ XMLH.prototype.prepareRequest = function() {
 }
 
 XMLH.prototype.getResponse = function(callback) {
+    
     var request = this.XMLH;
+    var errorStat = this.errorConnection;
     
     request.onreadystatechange = function() {
         if(request.readyState === XMLHttpRequest.DONE) {
 
-            if(request.status === 200) {
+            if(request.status === 200 && errorStat === false) {
                 callback(request.responseText);
                 return;
             } else {
-                callback({"success": false, "message":"Error!"});
+                var Error = JSON.stringify({success: false, message:"Error!"})
+                callback(Error);
                 return;
             }
             
@@ -112,6 +131,9 @@ XMLH.prototype.sendRequest = function() {
 
     var paramsBase = this.createBase();
     var paramsData = this.prepareRequest();
+
+    this.XMLH.onerror = this.connectionError(true);
+    this.XMLH.onload = this.connectionEstaplished(true);
 
     switch (this.method) {
         case 'GET':
